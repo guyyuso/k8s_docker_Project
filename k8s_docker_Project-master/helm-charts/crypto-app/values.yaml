@@ -1,0 +1,10 @@
+replicaCount: 2
+
+images:
+  frontend: guyyusupov/crypto-fe:latest
+  backend: guyyusupov/crypto-be:latest
+  mysql: mysql:5.7
+
+mysql:
+  rootPassword: "123456"
+  database: "crypto_db"
