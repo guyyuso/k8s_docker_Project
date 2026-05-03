@@ -1,0 +1,43 @@
+services:
+  mysqldb:
+    image: mysql:5.7
+    container_name: mysqldb
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+      MYSQL_DATABASE: "crypto_db"
+    networks:
+      - crypto-network
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 5
+
+  backend-service:
+    build: ./be
+    container_name: backend-service
+    environment:
+      - MYSQL_HOST=mysqldb
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=123456
+    ports:
+      - "5001:5001"
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+    networks:
+      - crypto-network
+
+  web:
+    build: ./fe
+    container_name: frontend-service
+    ports:
+      - "5002:5002"
+    depends_on:
+      - backend-service
+    networks:
+      - crypto-network
+
+networks:
+  crypto-network:
+    driver: bridge
+
